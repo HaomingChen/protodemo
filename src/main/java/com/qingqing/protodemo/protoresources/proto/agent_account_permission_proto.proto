@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_package = "";
+option java_outer_classname = "AgentAccountPermissionProto";
+
+message AgentPermissionInfo {
+    string id = 1;
+    string agent_account_id = 2;
+}
+
+message ListAgentAccountPermissionRequest {
+    string id = 1;
+}
+
+message ListAgentAccountPermissionResponse {
+    repeated AgentPermissionInfo permissionInfo = 1;
+}

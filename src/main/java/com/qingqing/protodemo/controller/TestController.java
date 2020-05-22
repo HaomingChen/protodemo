@@ -1,12 +1,16 @@
 package com.qingqing.protodemo.controller;
 
-import com.qingqing.protodemo.protoresources.protobuf.MessageUserLogin;
+import com.qingqing.protodemo.converter.AgentAccountPermissionConverter;
+import com.qingqing.protodemo.entities.AgentAccountPermission;
+import com.qingqing.protodemo.protoresources.protobuf.AgentAccountPermissionProto;
+import com.qingqing.protodemo.service.AgentPermissionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.UUID;
+import java.util.List;
 
 /**
  * @author Haoming Chen
@@ -15,13 +19,18 @@ import java.util.UUID;
 @Controller
 public class TestController {
 
-    @RequestMapping(value = "/test", produces = "application/x-protobuf")
-    @ResponseBody
-    public MessageUserLogin.MessageUserLoginResponse getPersonProto(@RequestBody MessageUserLogin.MessageUserLoginRequest request) {
+    @Autowired
+    AgentPermissionService agentPermissionService;
 
-        MessageUserLogin.MessageUserLoginResponse.Builder builder = MessageUserLogin.MessageUserLoginResponse.newBuilder();
-        builder.setAccessToken(UUID.randomUUID().toString());
-        builder.setUsername(request.getUsername());
+    @RequestMapping(value = "/agent-account-permission", produces = "application/x-protobuf")
+    @ResponseBody
+    public AgentAccountPermissionProto.ListAgentAccountPermissionResponse listAgentPermission(
+            @RequestBody AgentAccountPermissionProto.ListAgentAccountPermissionRequest request) {
+
+        AgentAccountPermissionProto.ListAgentAccountPermissionResponse.Builder builder = AgentAccountPermissionProto
+                .ListAgentAccountPermissionResponse.newBuilder();
+        List<AgentAccountPermission> list = agentPermissionService.agentAccountPermissionList();
+        AgentAccountPermissionConverter.convertAgentAccountPermission(list, builder);
         return builder.build();
 
     }
